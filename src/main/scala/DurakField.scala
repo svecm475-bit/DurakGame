@@ -30,9 +30,6 @@ object DurakField {
          |================================)
        """.stripMargin
     }
-
-    println("Hello Ruslan")
-
     // Output the field to the console
     println(field)
   }
