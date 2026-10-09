@@ -27,7 +27,7 @@ object DurakField {
          |
          |YOUR HAND:
          |  $myCards
-         |================================
+         |================================)
        """.stripMargin
 
     // Output the field to the console
