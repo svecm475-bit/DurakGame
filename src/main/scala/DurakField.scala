@@ -14,7 +14,7 @@ object DurakField {
     val myCards = "6♥  9♣  King♦  Ace♥"
 
     // Construct the text view of the playing field
-    val field =
+    val field = {
       s"""
          |=== CARD GAME: DURAK ===
          |Trump: $trumpCard | Cards left in deck: $cardsInDeck
@@ -29,6 +29,9 @@ object DurakField {
          |  $myCards
          |================================)
        """.stripMargin
+    }
+
+    println("Hello Ruslan")
 
     // Output the field to the console
     println(field)
