@@ -32,7 +32,6 @@ object DurakField {
     }
     println("hello ruslan")
     println()
-    println("Hallo Mein Freund!")
     // Output the field to the console
     println(field)
   }
