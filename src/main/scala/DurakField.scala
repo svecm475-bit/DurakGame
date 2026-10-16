@@ -32,6 +32,7 @@ object DurakField {
     }
     println("hello ruslan")
     println()
+    println()
     // Output the field to the console
     println(field)
   }
