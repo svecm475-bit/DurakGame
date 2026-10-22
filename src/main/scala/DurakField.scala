@@ -1,6 +1,5 @@
 object DurakField {
-
-  def main(args: Array[String]): Unit = {
+  def displayField(): String = {
     // Game state variables
     val trumpCard = "10♥"
     val cardsInDeck = 24
@@ -17,7 +16,7 @@ object DurakField {
     val field = {
       s"""
          |=== CARD GAME: DURAK ===
-         |Trump: $trumpCard | Cards left in deck: $cardsInDeck
+         |Trump: $trumpCard| Cards left in deck: $cardsInDeck
          |--------------------------------
          |Opponent cards: $opponentCards
          |
@@ -28,11 +27,12 @@ object DurakField {
          |YOUR HAND:
          |  $myCards
          |================================)
-       """.stripMargin
+           """.stripMargin
     }
-    println("hello Ruslan")
-    println()
-    // Output the field to the console
-    println(field)
+    // Return field
+    field
+  }
+  def main(args: Array[String]): Unit = {
+    println(displayField())
   }
 }
