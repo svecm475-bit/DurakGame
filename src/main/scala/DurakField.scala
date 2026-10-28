@@ -1,38 +1,47 @@
 object DurakField {
-  def displayField(): String = {
-    // Game state variables
-    val trumpCard = "10♥"
-    val cardsInDeck = 24
-    val opponentCards = 6
+  def displayField(
+    // Redners the current state of the game board into a formatted string
+    trumpCard: Card,
+    cardsInDeck: Int,
+    opponentCardsCount: Int,
+    attackingCard: Option[Card],
+    defendingCard: Option[Card],
+    playerHand: List[Card]
+                  ): String = {
 
-    // Cards currently played on the table
-    val attackingCard = "7♦"
-    val defendingCard = "Jack♦"
+    // Format attacking card, show dash if empty
+    val attackStr = if attackingCard.isDefined
+      then attackingCard.get.toString
+      else "-"
 
-    // Player's hand
-    val myCards = "6♥  9♣  King♦  Ace♥"
+    val defendStr = if defendingCard.isDefined
+      then defendingCard.get.toString
+      else "-"
 
+
+    // Combine all cards in the player's hand into a single string
+    var handStr = ""
+    for(card <- playerHand) {
+      handStr = handStr + card.toString + " "
+    }
     // Construct the text view of the playing field
     val field = {
       s"""
          |=== CARD GAME: DURAK ===
          |Trump: $trumpCard| Cards left in deck: $cardsInDeck
          |--------------------------------
-         |Opponent cards: $opponentCards
+         |Opponent cards: $opponentCardsCount
          |
          |TABLE:
-         |  Attack:  $attackingCard
-         |  Defend:  $defendingCard
+         |  Attack:  $attackStr
+         |  Defend:  $defendStr
          |
          |YOUR HAND:
-         |  $myCards
-         |================================)
+         |  $handStr
+         |================================
            """.stripMargin
     }
     // Return field
     field
-  }
-  def main(args: Array[String]): Unit = {
-    println(displayField())
   }
 }
