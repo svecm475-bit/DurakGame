@@ -5,29 +5,32 @@ import scala.io.StdIn.readLine
   // Create a full 36-card deck and snuffle it
   val deck = Deck.createFull36Deck()
   deck.shuffle()
+  val trumpCard = deck.drawTrumpCard
 
-  // Give cards to the player and pick a trump card
-  val myHand = deck.drawCards(6)
-  val trumpCard = deck.drawCard
+  // Give cards to the player
+  val player1 = new Player(List.empty[Card])
+  player1.drawUpToSix(deck)
+  val player2 = new Player(List.empty[Card])
+  player2.drawUpToSix(deck)
 
   //Initialize TUI with the current game state variables
   val tui = TUI(
     trumpCard = trumpCard,
     cardsInDeck = deck.getSize,
-    opponentCardsCount = 6,
+    opponentCardsCount = player2.getHandSize,
     attackingCard = None, // temporarily
     defendingCard = None,
-    playerHand = myHand
+    playerHand = player1.getHand
   )
 
   // Display the game field
   println(DurakField.displayField(
     trumpCard = trumpCard,
     cardsInDeck = deck.getSize,
-    opponentCardsCount = 6,
+    opponentCardsCount = player2.getHandSize,
     attackingCard = None, // temporarily
     defendingCard = None,
-    playerHand = myHand
+    playerHand = player1.getHand
   ))
 
   println("Print command:")

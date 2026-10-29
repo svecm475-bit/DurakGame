@@ -25,6 +25,11 @@ class Deck(var list: List[Card]) {
     }
     drawn
   }
+  def drawTrumpCard: Card = {
+    val trumpCard = drawCard
+    list = list.appended(trumpCard)
+    trumpCard
+  }
 }
 object Deck {
   // Method to create a standard 36-card deck using for-expression
