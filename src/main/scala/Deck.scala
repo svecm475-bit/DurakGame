@@ -16,15 +16,7 @@ class Deck(var list: List[Card]) {
   def shuffle(): Unit = {
     list = scala.util.Random.shuffle(list)
   }
-
-  def drawCards(amount: Int): List[Card] = {
-    var drawn = List.empty[Card]
-    while (drawn.size < amount && list.nonEmpty) {
-      val card = drawCard
-      drawn = drawn.appended(card)
-    }
-    drawn
-  }
+  
   def drawTrumpCard: Card = {
     val trumpCard = drawCard
     list = list.appended(trumpCard)

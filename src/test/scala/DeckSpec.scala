@@ -31,6 +31,7 @@ class DeckSpec extends AnyWordSpec with Matchers {
       deck.drawCard shouldBe ace
       deck.getSize shouldBe 1
       deck.list.head shouldBe king
+      deck.drawTrumpCard shouldBe king
     }
     "throw an exception when drawing from an empty deck" in {
       val lst = List.empty[Card]
@@ -40,5 +41,65 @@ class DeckSpec extends AnyWordSpec with Matchers {
         deck.drawCard
       }
     }
+    "shuffle the deck without losing cards" in {
+      val ace = Card(14, "Spades")
+      val king = Card(13, "Hearts")
+      val queen = Card(12, "Diamonds")
+
+      val originalCards = List(ace, king, queen)
+      val deck = new Deck(originalCards)
+
+      deck.shuffle()
+
+      deck.getSize shouldBe 3
+      deck.list.toSet shouldBe originalCards.toSet
+    }
+
+    "shuffle an empty deck" in {
+      val deck = new Deck(List.empty[Card])
+
+      deck.shuffle()
+
+      deck.getSize shouldBe 0
+      deck.list shouldBe empty
+    }
+
+    "create a full 36 card deck" in {
+      val deck = Deck.createFull36Deck()
+
+      deck.getSize shouldBe 36
+
+      val suits = List("♥", "♦", "♣", "♠")
+      val ranks = 6 to 14
+
+      for (suit <- suits; rank <- ranks) {
+        deck.list should contain(Card(rank, suit))
+      }
+
+      deck.list.distinct.size shouldBe 36
+    }
+
+    "keep the trump card as the last card" in {
+      val ace = Card(14, "Spades")
+      val king = Card(13, "Hearts")
+      val queen = Card(12, "Diamonds")
+
+      val deck = new Deck(List(ace, king, queen))
+
+      val trump = deck.drawTrumpCard
+
+      trump shouldBe ace
+      deck.getSize shouldBe 3
+      deck.list shouldBe List(king, queen, ace)
+    }
+
+    "throw an exception when choosing trump from an empty deck" in {
+      val deck = new Deck(List.empty[Card])
+
+      intercept[NoSuchElementException] {
+        deck.drawTrumpCard
+      }
+    }
+
   }
 }
