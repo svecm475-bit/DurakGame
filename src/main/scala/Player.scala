@@ -8,12 +8,13 @@ class Player(var hand: List[Card]) {
   def addCard(card: Card): Unit = {
     hand = hand.appended(card)
   }
-  def playCard(card: Card): Card = {
-    if (hand.contains(card)){
-      hand = hand.filterNot(_ == card)
-      card
+  def playCard(index: Int): Option[Card] = {
+    if (hand.contains(hand(index))){
+      hand = hand.filterNot(_ == hand(index))
+      hand.lift(index)
     } else {
-      throw new NoSuchElementException
+      println("No Card found")
+      None
     }
   }
 
