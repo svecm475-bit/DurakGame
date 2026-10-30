@@ -3,13 +3,6 @@ import scala.io.StdIn.readLine
 
 @main def main(): Unit =
   // Create a full 36-card deck and snuffle it
-//  val player1 = new Player(List.empty[Card])
-//  val player2 = new Player(List.empty[Card])
-//  val deck = Deck.createFull36Deck()
-//  deck.shuffle()
-//  val trumpCard = deck.drawTrumpCard
-//  player1.drawUpToSix(deck)
-//  player2.drawUpToSix(deck)
   val game = Game.startGame()
 
   //Initialize TUI with the current game state variables

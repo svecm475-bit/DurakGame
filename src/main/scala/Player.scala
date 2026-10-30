@@ -9,13 +9,16 @@ class Player(var hand: List[Card]) {
     hand = hand.appended(card)
   }
   def playCard(index: Int): Option[Card] = {
-    if (hand.contains(hand(index))){
-      hand = hand.filterNot(_ == hand(index))
-      hand.lift(index)
-    } else {
-      println("No Card found")
-      None
+    hand.lift(index) match {
+      case Some(card) =>
+        hand = hand.patch(index, Nil, 1)
+        Some(card)
+
+      case None =>
+        println("No card found")
+        None
     }
+  
   }
 
   def drawUpToSix(deck: Deck): Unit = {
