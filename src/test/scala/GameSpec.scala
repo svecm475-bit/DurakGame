@@ -33,5 +33,23 @@ class GameSpec extends AnyWordSpec with Matchers {
 
       game.deck.getSize shouldBe 24
     }
+    "initialize class" in {
+      val ace = new Card(14, "Spades")
+      val king = new Card(13, "Hearts")
+      val lst = List(ace, king)
+
+      val deck = new Deck(lst)
+      val player1 = new Player(List.empty[Card])
+      val player2 = new Player(List.empty[Card])
+
+      val trumpCard = new Card(12, "Hearts")
+
+      val game = new Game(player1, player2, deck, trumpCard)
+
+      game.player1 shouldBe player1
+      game.player2 shouldBe player2
+      game.deck shouldBe deck
+      game.trumpCard shouldBe trumpCard
+    }
   }
 }

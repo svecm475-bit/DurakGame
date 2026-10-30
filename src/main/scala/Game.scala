@@ -1,6 +1,8 @@
-case class Game(player1: Player, player2: Player, deck: Deck, trumpCard: Card) {
+class Game(val player1: Player,
+                val player2: Player,
+                val deck: Deck,
+                val trumpCard: Card) 
 
-}
 object Game {
   def startGame(): Game = {
     val player1 = new Player(List.empty[Card])
