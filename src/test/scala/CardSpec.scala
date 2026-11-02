@@ -1,8 +1,9 @@
+import model.Card
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
 class CardSpec extends AnyWordSpec with Matchers {
-  "Card" should {
+  "model.Card" should {
     "beat a lower card of the same suit" in {
       val jack = new Card(11, "♥")
       val seven = new Card(7, "♥")

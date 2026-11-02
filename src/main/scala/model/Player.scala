@@ -1,3 +1,5 @@
+package model
+
 class Player(var hand: List[Card]) {
   def getHandSize: Int = {
     hand.size

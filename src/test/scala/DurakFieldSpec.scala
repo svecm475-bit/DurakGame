@@ -1,5 +1,7 @@
+import model.Card
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import view.DurakField
 
 class DurakFieldSpec extends  AnyWordSpec with Matchers {
   "Deck field" should {

@@ -1,9 +1,10 @@
 
+import model.{Card, Deck, Player}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
 class PlayerSpec extends AnyWordSpec with Matchers {
-  "Player" should {
+  "model.Player" should {
 
     "return size of hand" in {
       val player = new Player(List.empty[Card])

@@ -1,3 +1,7 @@
+package view
+
+import model.Card
+
 object DurakField {
   def displayField(
     // Redners the current state of the game board into a formatted string

@@ -1,3 +1,5 @@
+package model
+
 class Game(val player1: Player,
                 val player2: Player,
                 val deck: Deck,
