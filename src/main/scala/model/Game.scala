@@ -1,9 +1,12 @@
 package model
 
 class Game(val player1: Player,
-                val player2: Player,
-                val deck: Deck,
-                val trumpCard: Card) 
+            val player2: Player,
+            val deck: Deck,
+            val trumpCard: Card,
+            var attackingCard: Option[Card]=None,
+            var defendingCard: Option[Card]=None
+          ) 
 
 object Game {
   def startGame(): Game = {

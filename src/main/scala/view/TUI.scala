@@ -1,32 +1,45 @@
 package view
 
-import model.{Card, Game}
+import controller.GameController
+import util.Observer
 
 import scala.io.StdIn.readLine
-class TUI(var trumpCard: Card, var cardsInDeck: Int, var opponentCardsCount: Int,
-          var attackingCard: Option[Card],
-           var defendingCard: Option[Card],
-           var playerHand: List[Card]) {
-  // Processes user command input from the console
-  def displayCard(card: Option[Card]): Unit = {
+class TUI(val controller: GameController) extends Observer{
+
+  def displayGame() : Unit = {
+    print("\u001b[H\u001b[2J")
+    Console.flush()
+
     println(DurakField.displayField(
-      trumpCard,
-      cardsInDeck,
-      opponentCardsCount,
-      card,
-      defendingCard,
-      playerHand
+      trumpCard = controller.getTrumpCard,
+      cardsInDeck = controller.getCardsInDeck,
+      opponentCardsCount = controller.getOpponentCardsCount,
+      attackingCard = controller.getAttackingCard,
+      defendingCard = controller.getDefendingCard,
+      playerHand = controller.getPlayerHand
     ))
   }
   
-  def displayGame(game: Game) : Unit = {
-    println(DurakField.displayField(
-      trumpCard = game.trumpCard,
-      cardsInDeck = game.deck.getSize,
-      opponentCardsCount = game.player2.getHandSize,
-      attackingCard = None, // temporarily
-      defendingCard = None,
-      playerHand = game.player1.getHand
-    ))
-  }
+  def gameLoop(): Unit =
+    val input = readLine()
+
+    input match {
+      case "exit" | "q" =>
+        println("Exiting...")
+
+      case "show" =>
+        displayGame()
+
+      case "play" =>
+        println("Choose index of the card you want to play:")
+        val index = readLine().toInt
+        controller.processPlayingCard(index)
+      case _ =>
+        println("Unknown command")
+    }
+
+    if input != "exit" && input != "q" then gameLoop()
+
+  def update(): Unit =
+    displayGame()
 }

@@ -43,6 +43,7 @@ object DurakField {
          |YOUR HAND:
          |  $handStr
          |================================
+         |print command:
            """.stripMargin
     }
     // Return field

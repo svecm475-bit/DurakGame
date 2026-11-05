@@ -1,34 +1,31 @@
 package controller
 
-import scala.io.StdIn.readLine
-import model.{Card,Game}
-import view.{TUI,DurakField}
+import model.{Card, Game}
+import util.Observable
 
-class GameController (game: Game, tui: TUI) {
-  def gameLoop(): Unit =
-    print("> ")
-    val input = readLine()
-    processInput(input)
+class GameController (game: Game) extends Observable{
+  def processPlayingCard(index: Int): Option[Card] = {
+    val card = game.player1.playCard(index)
 
-    if input != "exit" && input != "q" then gameLoop()
-  
-  def processPlayingCard(): Unit = {
-        println("Choose index of the card you want to play:")
-        val index = readLine().toInt
-        println(index)
-        val card: Option[Card] = game.player1.playCard(index)
-        tui.displayCard(card)
-      }
+    if (card.isDefined) {
+      game.attackingCard = card
+      notifyObservers()
+    }
 
-  def processInput(input: String): Unit = {
-        input match
-          case "exit" | "q" => println("Exiting...")
-          case "show" =>
-            // Print the dynamic game field using current state parameters
-            tui.displayGame(game)
-          case "play" => processPlayingCard()
-          case _ => println("Unknown command")
-      }
+    card
+  }
 
+  def getPlayerHand: List[Card] = {
+    game.player1.getHand
+  }
 
+  def getTrumpCard: Card = game.trumpCard
+
+  def getCardsInDeck: Int = game.deck.getSize
+
+  def getOpponentCardsCount: Int = game.player2.getHandSize
+
+  def getAttackingCard: Option[Card] = game.attackingCard
+
+  def getDefendingCard: Option[Card] = game.defendingCard
 }

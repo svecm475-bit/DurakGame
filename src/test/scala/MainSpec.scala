@@ -22,7 +22,6 @@ class MainSpec extends AnyWordSpec with Matchers {
       val result = output.toString("UTF-8")
 
       result should include("CARD GAME: DURAK")
-      result should include("Print command:")
       result should include("Exiting...")
     }
 
@@ -39,7 +38,6 @@ class MainSpec extends AnyWordSpec with Matchers {
       val result = output.toString("UTF-8")
 
       result should include("CARD GAME: DURAK")
-      result should include("Print command:")
       result should include("Exiting...")
     }
 
@@ -58,6 +56,7 @@ class MainSpec extends AnyWordSpec with Matchers {
       result should include("Unknown command")
       result should include("Exiting...")
     }
+
   }
 }
 

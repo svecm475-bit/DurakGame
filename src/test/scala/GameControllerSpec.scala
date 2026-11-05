@@ -1,203 +1,157 @@
-package controller
-
-import model.Game
-import view.TUI
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
+import controller.GameController
+import model.{Card, Deck, Game, Player}
+import util.Observer
 
 class GameControllerSpec extends AnyWordSpec with Matchers {
 
+  // Creates a predictable game for testing
+  private def createGame(): Game = {
+    val player1 = new Player(List(
+      Card(7, "♥"),
+      Card(8, "♣"),
+      Card(9, "♦")
+    ))
+
+    val player2 = new Player(List(
+      Card(6, "♠"),
+      Card(10, "♥")
+    ))
+
+    val deck = Deck.createFull36Deck()
+    val trumpCard = Card(14, "♠")
+
+    new Game(player1, player2, deck, trumpCard)
+  }
+
   "GameController" should {
 
-    "process show command" in {
-      val game = Game.startGame()
-      val tui = new TUI(
-        game.trumpCard,
-        game.deck.getSize,
-        game.player2.getHandSize,
-        None,
-        None,
-        game.player1.getHand
+    "return the player's hand" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      controller.getPlayerHand shouldBe List(
+        Card(7, "♥"),
+        Card(8, "♣"),
+        Card(9, "♦")
       )
-
-      val controller = new GameController(game, tui)
-      val output = new ByteArrayOutputStream()
-
-      Console.withOut(new PrintStream(output)) {
-        controller.processInput("show")
-      }
-
-      output.toString("UTF-8") should include("CARD GAME: DURAK")
     }
 
-    "process play command" in {
-      val game = Game.startGame()
-      val tui = new TUI(
-        game.trumpCard,
-        game.deck.getSize,
-        game.player2.getHandSize,
-        None,
-        None,
-        game.player1.getHand
+    "return the trump card" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      controller.getTrumpCard shouldBe game.trumpCard
+    }
+
+    "return the number of cards in the deck" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      controller.getCardsInDeck shouldBe game.deck.getSize
+    }
+
+    "return the number of opponent cards" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      controller.getOpponentCardsCount shouldBe 2
+    }
+
+    "return an empty attacking card initially" in {
+      val controller = new GameController(createGame())
+
+      controller.getAttackingCard shouldBe None
+    }
+
+    "return an empty defending card initially" in {
+      val controller = new GameController(createGame())
+
+      controller.getDefendingCard shouldBe None
+    }
+
+    "return the attacking card after it changes" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      val card = Card(7, "♥")
+      game.attackingCard = Some(card)
+
+      controller.getAttackingCard shouldBe Some(card)
+    }
+
+    "return the defending card after it changes" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      val card = Card(8, "♥")
+      game.defendingCard = Some(card)
+
+      controller.getDefendingCard shouldBe Some(card)
+    }
+
+    "play a valid card and update the game" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      val result = controller.processPlayingCard(0)
+
+      result shouldBe Some(Card(7, "♥"))
+      controller.getAttackingCard shouldBe Some(Card(7, "♥"))
+      controller.getPlayerHand shouldBe List(
+        Card(8, "♣"),
+        Card(9, "♦")
       )
+    }
 
-      val controller = new GameController(game, tui)
-      val firstCard = game.player1.getHand.head
+    "notify observers after a successful move" in {
+      val controller = new GameController(createGame())
 
-      val input = new ByteArrayInputStream("0\n".getBytes("UTF-8"))
-      val output = new ByteArrayOutputStream()
+      var notificationCount = 0
 
-      Console.withIn(input) {
-        Console.withOut(new PrintStream(output)) {
-          controller.processInput("play")
+      val observer = new Observer {
+        override def update(): Unit = {
+          notificationCount += 1
         }
       }
 
-      game.player1.getHandSize shouldBe 5
-      output.toString("UTF-8") should include(firstCard.toString)
+      controller.add(observer)
+      controller.processPlayingCard(0)
+
+      notificationCount shouldBe 1
     }
 
-    "handle invalid card index" in {
-      val game = Game.startGame()
-      val tui = new TUI(
-        game.trumpCard,
-        game.deck.getSize,
-        game.player2.getHandSize,
-        None,
-        None,
-        game.player1.getHand
-      )
+    "not change the game when the card index is invalid" in {
+      val game = createGame()
+      val controller = new GameController(game)
 
-      val controller = new GameController(game, tui)
-      val input = new ByteArrayInputStream("99\n".getBytes("UTF-8"))
-      val output = new ByteArrayOutputStream()
+      val originalHand = controller.getPlayerHand
 
-      Console.withIn(input) {
-        Console.withOut(new PrintStream(output)) {
-          controller.processInput("play")
+      val result = controller.processPlayingCard(99)
+
+      result shouldBe None
+      controller.getPlayerHand shouldBe originalHand
+      controller.getAttackingCard shouldBe None
+    }
+
+    "not notify observers after an invalid move" in {
+      val controller = new GameController(createGame())
+
+      var notificationCount = 0
+
+      val observer = new Observer {
+        override def update(): Unit = {
+          notificationCount += 1
         }
       }
 
-      game.player1.getHandSize shouldBe 6
-      output.toString("UTF-8") should include("No card found")
-    }
+      controller.add(observer)
+      controller.processPlayingCard(99)
 
-    "process exit command" in {
-      val game = Game.startGame()
-      val tui = new TUI(
-        game.trumpCard,
-        game.deck.getSize,
-        game.player2.getHandSize,
-        None,
-        None,
-        game.player1.getHand
-      )
-
-      val controller = new GameController(game, tui)
-      val output = new ByteArrayOutputStream()
-
-      Console.withOut(new PrintStream(output)) {
-        controller.processInput("exit")
-      }
-
-      output.toString("UTF-8") should include("Exiting...")
-    }
-
-    "process q command" in {
-      val game = Game.startGame()
-      val tui = new TUI(
-        game.trumpCard,
-        game.deck.getSize,
-        game.player2.getHandSize,
-        None,
-        None,
-        game.player1.getHand
-      )
-
-      val controller = new GameController(game, tui)
-      val output = new ByteArrayOutputStream()
-
-      Console.withOut(new PrintStream(output)) {
-        controller.processInput("q")
-      }
-
-      output.toString("UTF-8") should include("Exiting...")
-    }
-
-    "process unknown command" in {
-      val game = Game.startGame()
-      val tui = new TUI(
-        game.trumpCard,
-        game.deck.getSize,
-        game.player2.getHandSize,
-        None,
-        None,
-        game.player1.getHand
-      )
-
-      val controller = new GameController(game, tui)
-      val output = new ByteArrayOutputStream()
-
-      Console.withOut(new PrintStream(output)) {
-        controller.processInput("invalid")
-      }
-
-      output.toString("UTF-8") should include("Unknown command")
-    }
-
-    "stop game loop after exit command" in {
-      val game = Game.startGame()
-      val tui = new TUI(
-        game.trumpCard,
-        game.deck.getSize,
-        game.player2.getHandSize,
-        None,
-        None,
-        game.player1.getHand
-      )
-
-      val controller = new GameController(game, tui)
-
-      val input = new ByteArrayInputStream("exit\n".getBytes("UTF-8"))
-      val output = new ByteArrayOutputStream()
-
-      Console.withIn(input) {
-        Console.withOut(new PrintStream(output)) {
-          controller.gameLoop()
-        }
-      }
-
-      output.toString("UTF-8") should include("Exiting...")
-    }
-
-    "stop game loop after q command" in {
-      val game = Game.startGame()
-      val tui = new TUI(
-        game.trumpCard,
-        game.deck.getSize,
-        game.player2.getHandSize,
-        None,
-        None,
-        game.player1.getHand
-      )
-
-      val controller = new GameController(game, tui)
-
-      val input = new ByteArrayInputStream("q\n".getBytes("UTF-8"))
-      val output = new ByteArrayOutputStream()
-
-      Console.withIn(input) {
-        Console.withOut(new PrintStream(output)) {
-          controller.gameLoop()
-        }
-      }
-
-      output.toString("UTF-8") should include("Exiting...")
+      notificationCount shouldBe 0
     }
   }
 }
