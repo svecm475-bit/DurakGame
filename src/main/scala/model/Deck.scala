@@ -1,3 +1,5 @@
+package model
+
 class Deck(var list: List[Card]) {
   def getSize: Int = {
     list.size
@@ -9,22 +11,14 @@ class Deck(var list: List[Card]) {
     val card = list.head
     // new list
     list = list.tail
-    // return Card
+    // return model.Card
     card
   }
   // Shuffles the remaining cards in the deck randomly
   def shuffle(): Unit = {
     list = scala.util.Random.shuffle(list)
   }
-
-  def drawCards(amount: Int): List[Card] = {
-    var drawn = List.empty[Card]
-    while (drawn.size < amount && list.nonEmpty) {
-      val card = drawCard
-      drawn = drawn.appended(card)
-    }
-    drawn
-  }
+  
   def drawTrumpCard: Card = {
     val trumpCard = drawCard
     list = list.appended(trumpCard)
@@ -37,7 +31,7 @@ object Deck {
     val suits = List("♥", "♦", "♣", "♠")
     val ranks = (6 to 14).toList
 
-    // Generate all 36 Card objects by iterating over suits and ranks
+    // Generate all 36 model.Card objects by iterating over suits and ranks
     val allCards = for (suit <- suits; rank <- ranks) yield Card(rank,suit)
 
     new Deck(allCards)
