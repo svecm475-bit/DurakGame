@@ -1,9 +1,10 @@
+package controller
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
 
 import controller.GameController
 import model.{Card, Deck, Game, Player}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import util.Observer
 
 class GameControllerSpec extends AnyWordSpec with Matchers {

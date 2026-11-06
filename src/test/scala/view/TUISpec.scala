@@ -1,8 +1,9 @@
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
+package view
 
-import model.Game
 import controller.GameController
+import model.Game
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import view.TUI
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, PrintStream}

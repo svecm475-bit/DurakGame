@@ -1,5 +1,7 @@
-import org.scalatest.wordspec.AnyWordSpec
+package util
+
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import util.{Observable, Observer}
 
 class ObservableSpec extends AnyWordSpec with Matchers {

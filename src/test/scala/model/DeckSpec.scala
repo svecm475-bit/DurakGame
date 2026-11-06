@@ -1,6 +1,8 @@
+package model
+
 import model.{Card, Deck}
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class DeckSpec extends AnyWordSpec with Matchers {
   "Deck" should {
