@@ -5,6 +5,8 @@ import model.{Card, Deck, Player}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
+import java.io.ByteArrayOutputStream
+
 class PlayerSpec extends AnyWordSpec with Matchers {
   "model.Player" should {
 
@@ -47,6 +49,12 @@ class PlayerSpec extends AnyWordSpec with Matchers {
     "return None for an invalid card index" in {
       val ace = Card(14, "Spades")
       val player = new Player(List(ace))
+      val output = new ByteArrayOutputStream()
+
+      Console.withOut(output) {
+        player.playCard(5)
+      }
+      output.toString should include ("No card found")
 
       player.playCard(5) shouldBe None
       player.playCard(-1) shouldBe None
