@@ -24,10 +24,7 @@ object DurakField {
 
 
     // Combine all cards in the player's hand into a single string
-    var handStr = ""
-    for(card <- playerHand) {
-      handStr = handStr + card.toString + " "
-    }
+    val handStr = playerHand.map(_.toString).mkString("", " ", " ")
     // Construct the text view of the playing field
     val field = {
       s"""
