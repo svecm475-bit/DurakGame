@@ -30,5 +30,12 @@ jobs:
       - name: Compile
         run: sbt compile
 
-      - name: Run tests
-        run: sbt test
+      - name: Run tests with coverage
+        run: sbt clean coverage test coverageReport
+
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/scala-3.9.0/scoverage-report/cobertura.xml
+          format: cobertura
