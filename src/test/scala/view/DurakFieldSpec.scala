@@ -1,3 +1,5 @@
+package view
+
 import model.Card
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -32,6 +34,7 @@ class DurakFieldSpec extends  AnyWordSpec with Matchers {
       field should include("K♦")
       field should include("Opponent cards: 5")
       field should include("Cards left in deck: 24")
+      field should include("6♣ K♦ ")
     }
 
     "display empty hand and no defending card" in {
@@ -46,6 +49,15 @@ class DurakFieldSpec extends  AnyWordSpec with Matchers {
       field should include("Defend:  -")
       field should include("Opponent cards: 0")
       field should include("Cards left in deck: 0")
+    }
+    "display no attacking card and no defending card" in {
+      val trump = Card(14,"♠")
+      val field = DurakField.displayField(
+        trump, 0, 0, None, None, List.empty[Card]
+      )
+
+      field should include("Attack:  -")
+      field should include("Defend:  -")
     }
 
   }

@@ -1,6 +1,8 @@
+package model
+
 import model.{Card, Deck}
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class DeckSpec extends AnyWordSpec with Matchers {
   "Deck" should {
@@ -97,9 +99,10 @@ class DeckSpec extends AnyWordSpec with Matchers {
     "throw an exception when choosing trump from an empty deck" in {
       val deck = new Deck(List.empty[Card])
 
-      intercept[NoSuchElementException] {
+      val exeception = intercept[NoSuchElementException] {
         deck.drawTrumpCard
       }
+      exeception.getMessage shouldBe "Deck is empty"
     }
 
   }
