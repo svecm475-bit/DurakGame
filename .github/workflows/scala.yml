@@ -33,9 +33,22 @@ jobs:
       - name: Run tests with coverage
         run: sbt "clean; coverage; test; coverageReport"
 
+      - name: Find coverage report
+        id: coverage
+        shell: bash
+        run: |
+          find target -name cobertura.xml -print
+          REPORT=$(find target -name cobertura.xml -type f -print -quit)
+          if [ -z "$REPORT" ]; then
+            echo "Cobertura report not found"
+            exit 1
+          fi
+          echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/scala-3.9.0/scoverage-report/cobertura.xml
+          file: ${{ steps.coverage.outputs.report }}
           format: cobertura
+
