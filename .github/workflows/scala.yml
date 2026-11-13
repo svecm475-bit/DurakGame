@@ -31,7 +31,7 @@ jobs:
         run: sbt compile
 
       - name: Run tests with coverage
-        run: sbt "clean; coverage; test; coverageReport"
+        run: sbt "clean; coverage; Test / testFull; coverageReport"
 
       - name: Find coverage report
         id: coverage
