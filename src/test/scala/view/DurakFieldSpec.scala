@@ -59,6 +59,15 @@ class DurakFieldSpec extends  AnyWordSpec with Matchers {
       field should include("Attack:  -")
       field should include("Defend:  -")
     }
+    "not add unexpected text after the player's hand" in {
+      val trump = Card(14, "Spades")
+      val hand = List(Card(6, "Clubs"), Card(13, "Hearts"))
 
+      val field = DurakField.displayField(
+        trump, 24, 6, None, None, hand
+      )
+
+      field should include(s"  ${hand.map(_.toString).mkString(" ")} \n")
+    }
   }
 }

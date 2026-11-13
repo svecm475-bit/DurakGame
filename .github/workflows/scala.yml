@@ -1,0 +1,53 @@
+name: Scala CI
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Java
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: sbt
+
+      - name: Install sbt
+        uses: sbt/setup-sbt@c6bd01274abceb9dd5bd9f1a336c2a26c259de69 # v1
+
+      - name: Compile
+        run: sbt compile
+
+      - name: Run tests with coverage
+        run: sbt "clean; coverage; Test / testFull; coverageReport"
+
+      - name: Find coverage report
+        id: coverage
+        shell: bash
+        run: |
+          find target -name cobertura.xml -print
+          REPORT=$(find target -name cobertura.xml -type f -print -quit)
+          if [ -z "$REPORT" ]; then
+            echo "Cobertura report not found"
+            exit 1
+          fi
+          echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ steps.coverage.outputs.report }}
+          format: cobertura
