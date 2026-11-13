@@ -26,6 +26,8 @@ jobs:
 
       - name: Install sbt
         uses: sbt/setup-sbt@c6bd01274abceb9dd5bd9f1a336c2a26c259de69 # v1
+        with:
+          disk-cache: false
 
       - name: Compile
         run: sbt compile
