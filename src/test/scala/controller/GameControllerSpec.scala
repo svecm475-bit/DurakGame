@@ -2,7 +2,7 @@ package controller
 
 
 import controller.GameController
-import model.{Card, Deck, Game, Player}
+import model.{Card, Deck, Game, Player,AttackState,DefendState}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import util.Observer
@@ -107,6 +107,20 @@ class GameControllerSpec extends AnyWordSpec with Matchers {
         Card(9, "♦")
       )
     }
+
+    "play a valid card when the game is in DefendState" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      game.state = new DefendState
+
+      val result = controller.processPlayingCard(0)
+
+      result shouldBe Some(Card(7, "♥"))
+      controller.getDefendingCard shouldBe Some(Card(7, "♥"))
+      game.state shouldBe a[AttackState]
+    }
+
 
     "notify observers after a successful move" in {
       val controller = new GameController(createGame())
