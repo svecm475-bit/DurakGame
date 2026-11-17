@@ -1,6 +1,6 @@
 package controller
 
-import model.{Card, Game}
+import model.{AttackState, Card, CardAttacked, CardDefended, DefendState, Game}
 import util.Observable
 
 class GameController (game: Game) extends Observable{
@@ -8,7 +8,16 @@ class GameController (game: Game) extends Observable{
     val card = game.player1.playCard(index)
 
     if (card.isDefined) {
-      game.attackingCard = card
+      // Check the current game state to determine which event should be triggered.
+      game.state match {
+        case _: AttackState =>
+          game.state.playCard(game, card.get)
+          game.changeState(CardAttacked)
+        case _: DefendState =>
+          game.state.playCard(game, card.get)
+          game.changeState(CardDefended)
+      }
+      game.printState()
       notifyObservers()
     }
 
