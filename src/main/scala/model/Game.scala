@@ -8,6 +8,7 @@ class Game(val player1: Player,
             var defendingCard: Option[Card]=None
           ) {
   var state : GameState = new AttackState()
+  var discardPile: List[Card] = List.empty[Card]
   var attacker : Player = player1
   var defender : Player = player2
 
