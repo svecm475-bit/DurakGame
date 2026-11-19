@@ -9,6 +9,10 @@ class DefendState extends GameState {
     }
   override def playCard(game: Game, card: Card): Unit = {
     game.defendingCard = Some(card)
+    game.changeState(CardDefended)
   }
 
+  override def currentPlayer(game: Game): Option[Player] = {
+    Some(game.defender)
+  }
 }

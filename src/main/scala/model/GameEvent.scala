@@ -9,3 +9,5 @@ case object CardAttacked extends GameEvent
 case object CardDefended extends GameEvent
 // Fired when the current round is finished.
 case object RoundFinished extends GameEvent
+
+case object RoundStarted extends GameEvent

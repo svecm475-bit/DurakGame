@@ -112,15 +112,16 @@ class GameControllerSpec extends AnyWordSpec with Matchers {
       val game = createGame()
       val controller = new GameController(game)
 
-      game.state = new DefendState
+      game.state = new DefendState()
 
+      val expectedCard = game.defender.getHand.head
       val result = controller.processPlayingCard(0)
 
-      result shouldBe Some(Card(7, "♥"))
-      controller.getDefendingCard shouldBe Some(Card(7, "♥"))
+      result shouldBe Some(expectedCard)
+      controller.getDefendingCard shouldBe Some(expectedCard)
+      game.defender.getHand should not contain expectedCard
       game.state shouldBe a[AttackState]
     }
-
 
     "notify observers after a successful move" in {
       val controller = new GameController(createGame())

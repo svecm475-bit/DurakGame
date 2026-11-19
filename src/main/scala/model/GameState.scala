@@ -5,4 +5,6 @@ trait GameState { //interface
   def handle(event: GameEvent) : GameState
   // Executes a card play according to the current game state.
   def playCard(game: Game, card: Card) : Unit
+
+  def currentPlayer(game: Game): Option[Player]
 }

@@ -37,15 +37,15 @@ class GameSpec extends AnyWordSpec with Matchers {
       game.deck.getSize shouldBe 24
     }
     "initialize class" in {
-      val ace = new Card(14, "Spades")
-      val king = new Card(13, "Hearts")
+      val ace = Card(14, "Spades")
+      val king = Card(13, "Hearts")
       val lst = List(ace, king)
 
       val deck = new Deck(lst)
       val player1 = new Player(List.empty[Card])
       val player2 = new Player(List.empty[Card])
 
-      val trumpCard = new Card(12, "Hearts")
+      val trumpCard = Card(12, "Hearts")
 
       val game = new Game(player1, player2, deck, trumpCard)
 
@@ -53,6 +53,35 @@ class GameSpec extends AnyWordSpec with Matchers {
       game.player2 shouldBe player2
       game.deck shouldBe deck
       game.trumpCard shouldBe trumpCard
+    }
+    "switch between attack and defend states" in {
+      val game = Game.startGame()
+
+      game.state shouldBe a[AttackState]
+
+      val attackCard = game.player1.getHand.head
+      game.playCard(attackCard)
+
+      game.state shouldBe a[DefendState]
+      game.attackingCard shouldBe Some(attackCard)
+
+      val defendCard = game.player2.getHand.head
+      game.playCard(defendCard)
+
+      game.state shouldBe a[AttackState]
+      game.defendingCard shouldBe Some(defendCard)
+    }
+    "finish a round and start a new one" in {
+      val game = Game.startGame()
+
+      game.playCard(game.player1.getHand.head)
+      game.state shouldBe a[DefendState]
+
+      game.changeState(RoundFinished)
+      game.state shouldBe a[RoundFinishedState]
+
+      game.changeState(RoundStarted)
+      game.state shouldBe a[AttackState]
     }
   }
 }

@@ -11,6 +11,9 @@ class Game(val player1: Player,
   var attacker : Player = player1
   var defender : Player = player2
 
+  def playCard(card: Card): Unit = {
+    state.playCard(this, card)
+  }
   def changeState(event: GameEvent): Unit = {
     state = state.handle(event)
   }

@@ -1,23 +1,14 @@
 package controller
 
-import model.{AttackState, Card, CardAttacked, CardDefended, DefendState, Game}
+import model.{Card, Game}
 import util.Observable
 
 class GameController (game: Game) extends Observable{
   def processPlayingCard(index: Int): Option[Card] = {
-    val card = game.player1.playCard(index)
+    val card = game.state.currentPlayer(game).flatMap(_.playCard(index))
 
-    if (card.isDefined) {
-      // Check the current game state to determine which event should be triggered.
-      game.state match {
-        case _: AttackState =>
-          game.state.playCard(game, card.get)
-          game.changeState(CardAttacked)
-        case _: DefendState =>
-          game.state.playCard(game, card.get)
-          game.changeState(CardDefended)
-      }
-      game.printState()
+    card.foreach { playedCard =>
+      game.playCard(playedCard)
       notifyObservers()
     }
 
