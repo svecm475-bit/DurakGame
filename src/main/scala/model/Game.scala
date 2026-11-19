@@ -18,9 +18,6 @@ class Game(val player1: Player,
   def changeState(event: GameEvent): Unit = {
     state = state.handle(event)
   }
-  def printState(): Unit = {
-    println(state.getClass.getSimpleName)
-  }
 }
 
 object Game {
