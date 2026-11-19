@@ -19,6 +19,10 @@ class GameController (game: Game) extends Observable{
     game.player1.getHand
   }
 
+  def finishRound(successfulDefense: Boolean): Unit = {
+    game.finishRound(successfulDefense)
+    notifyObservers()
+  }
   def getTrumpCard: Card = game.trumpCard
 
   def getCardsInDeck: Int = game.deck.getSize

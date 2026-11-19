@@ -18,6 +18,13 @@ class Game(val player1: Player,
   def changeState(event: GameEvent): Unit = {
     state = state.handle(event)
   }
+  def finishRound(successfulDefense: Boolean): Unit = {
+    val round: RoundTemplate =
+      if (successfulDefense) new SuccessfulDefense()
+      else new FailedDefense()
+
+    round.finishRound(this)
+  }
 }
 
 object Game {
