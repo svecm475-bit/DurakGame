@@ -169,5 +169,22 @@ class GameControllerSpec extends AnyWordSpec with Matchers {
 
       notificationCount shouldBe 0
     }
+
+    "finish a round and notify observers" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      game.attackingCard = Some(Card(7, "♥"))
+      game.defendingCard = Some(Card(8, "♥"))
+
+      controller.finishRound(true)
+
+      game.discardPile should contain(Card(7, "♥"))
+      game.discardPile should contain(Card(8, "♥"))
+
+      game.attackingCard shouldBe None
+      game.defendingCard shouldBe None
+      game.state shouldBe a[AttackState]
+    }
   }
 }

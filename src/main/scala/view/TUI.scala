@@ -18,6 +18,7 @@ class TUI(val controller: GameController) extends Observer{
       defendingCard = controller.getDefendingCard,
       playerHand = controller.getPlayerHand
     ))
+    println("[0] show cards\n[1] play card\n")
   }
   
   def gameLoop(): Unit =
@@ -27,10 +28,10 @@ class TUI(val controller: GameController) extends Observer{
       case "exit" | "q" =>
         println("Exiting...")
 
-      case "show" =>
+      case "show" | "0" =>
         displayGame()
 
-      case "play" =>
+      case "play" | "1" =>
         println("Choose index of the card you want to play:")
         val index = readLine().toInt
         controller.processPlayingCard(index)

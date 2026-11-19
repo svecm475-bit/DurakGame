@@ -83,5 +83,39 @@ class GameSpec extends AnyWordSpec with Matchers {
       game.changeState(RoundStarted)
       game.state shouldBe a[AttackState]
     }
+    "finish a round with successful defense" in {
+      val game = Game.startGame()
+
+      val originalDefender = game.defender
+
+      game.attackingCard = Some(Card(7, "♥"))
+      game.defendingCard = Some(Card(8, "♥"))
+
+      game.finishRound(true)
+
+      game.discardPile should contain(Card(7, "♥"))
+      game.discardPile should contain(Card(8, "♥"))
+      game.attacker shouldBe originalDefender
+      game.state shouldBe a[AttackState]
+    }
+    "finish a round with failed defense" in {
+      val game = Game.startGame()
+
+      val originalAttacker = game.attacker
+      val originalDefender = game.defender
+
+      game.attackingCard = Some(Card(7, "♥"))
+      game.defendingCard = Some(Card(8, "♥"))
+
+      game.finishRound(false)
+
+      game.attacker shouldBe originalAttacker
+      game.defender shouldBe originalDefender
+
+      game.defender.getHand should contain(Card(7, "♥"))
+      game.defender.getHand should contain(Card(8, "♥"))
+
+      game.state shouldBe a[AttackState]
+    }
   }
 }

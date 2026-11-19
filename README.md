@@ -9,7 +9,7 @@ A Durak card game developed in Scala 3.
 
 ## Test Coverage
 
-[![Coverage Status](https://coveralls.io/repos/github/svecm475-bit/DurakGame/badge.svg?branch=development)](https://coveralls.io/github/svecm475-bit/DurakGame?branch=development)
+[![Coverage Status](https://coveralls.io/repos/github/svecm475-bit/DurakGame/badge.svg?branch=main)](https://coveralls.io/github/svecm475-bit/DurakGame?branch=main)
 
 ## Technologies
 
