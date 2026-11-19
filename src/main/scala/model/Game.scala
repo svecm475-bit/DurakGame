@@ -6,7 +6,18 @@ class Game(val player1: Player,
             val trumpCard: Card,
             var attackingCard: Option[Card]=None,
             var defendingCard: Option[Card]=None
-          ) 
+          ) {
+  var state : GameState = new AttackState()
+  var attacker : Player = player1
+  var defender : Player = player2
+
+  def changeState(event: GameEvent): Unit = {
+    state = state.handle(event)
+  }
+  def printState(): Unit = {
+    println(state.getClass.getSimpleName)
+  }
+}
 
 object Game {
   def startGame(): Game = {
