@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
       "org.scalameta" %% "munit" % "1.2.3" % Test
     ),
     // Run every discovered suite instead of sbt's incremental testQuick task.
-//    Test / test := (Test / testFull).value,
+    Test / test := (Test / testFull).value,
     // Keep instrumentation data in the standard project target directory.
     coverageDataDir := baseDirectory.value / "target" / s"scala-${scalaVersion.value}"
   )

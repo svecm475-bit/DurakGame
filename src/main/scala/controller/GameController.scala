@@ -5,10 +5,10 @@ import util.Observable
 
 class GameController (game: Game) extends Observable{
   def processPlayingCard(index: Int): Option[Card] = {
-    val card = game.player1.playCard(index)
+    val card = game.state.currentPlayer(game).flatMap(_.playCard(index))
 
-    if (card.isDefined) {
-      game.attackingCard = card
+    card.foreach { playedCard =>
+      game.playCard(playedCard)
       notifyObservers()
     }
 

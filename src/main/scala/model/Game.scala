@@ -6,7 +6,19 @@ class Game(val player1: Player,
             val trumpCard: Card,
             var attackingCard: Option[Card]=None,
             var defendingCard: Option[Card]=None
-          ) 
+          ) {
+  var state : GameState = new AttackState()
+  var discardPile: List[Card] = List.empty[Card]
+  var attacker : Player = player1
+  var defender : Player = player2
+
+  def playCard(card: Card): Unit = {
+    state.playCard(this, card)
+  }
+  def changeState(event: GameEvent): Unit = {
+    state = state.handle(event)
+  }
+}
 
 object Game {
   def startGame(): Game = {
