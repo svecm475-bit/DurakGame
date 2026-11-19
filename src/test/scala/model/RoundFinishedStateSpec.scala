@@ -25,5 +25,11 @@ class RoundFinishedStateSpec extends AnyFunSuite {
 
     output.toString should include ("Round is finished!")
   }
+  test("return None as current player") {
+    val game = Game.startGame()
+    val state = new RoundFinishedState()
+
+    state.currentPlayer(game) shouldBe None
+  }
 }
 
