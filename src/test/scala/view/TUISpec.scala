@@ -133,5 +133,33 @@ class TUISpec extends AnyWordSpec with Matchers {
 
       result should include("Exiting...")
     }
+
+    "show when the user enters 0"  in {
+      val (_, _, tui) = createTUI()
+
+      val result = runCommands(tui, "0\nq\n")
+
+      result should include("CARD GAME: DURAK")
+      result should include("YOUR HAND:")
+      result should include("Exiting...")
+    }
+    "play when the user enters 1" in {
+      val (game, controller, tui) = createTUI()
+      controller.add(tui)
+
+      val playedCard = game.player1.getHand.head
+
+      val result = runCommands(tui, "1\n0\nq\n")
+
+      game.attackingCard shouldBe Some(playedCard)
+      game.player1.getHandSize shouldBe 5
+
+      result should include("Choose index")
+      result should include(s"Attack:  $playedCard")
+      result should include("Exiting...")
+
+    }
+
+
   }
 }
