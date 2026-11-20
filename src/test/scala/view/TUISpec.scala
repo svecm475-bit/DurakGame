@@ -63,6 +63,7 @@ class TUISpec extends AnyWordSpec with Matchers {
       result should include("Attack:")
       result should include("Defend:")
       result should include("\u001b[H\u001b[2J")
+      result should include("[0] show cards\n[1] play card\n")
       result should include(game.trumpCard.toString)
     }
 
