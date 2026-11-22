@@ -2,17 +2,20 @@ package controller
 
 import model.{Card, Game}
 import util.Observable
+import command.{PlayCardCommand,Invoker}
 
 class GameController (game: Game) extends Observable{
+  private val invoker = new Invoker()
   def processPlayingCard(index: Int): Option[Card] = {
-    val card = game.state.currentPlayer(game).flatMap(_.playCard(index))
+    val command = new PlayCardCommand(game,index)
+    invoker.doStep(command)
+    notifyObservers()
+    command.getPlayedCard
+  }
 
-    card.foreach { playedCard =>
-      game.playCard(playedCard)
-      notifyObservers()
-    }
-
-    card
+  def undo(): Unit = {
+    invoker.undoStep()
+    notifyObservers()
   }
 
   def getPlayerHand: List[Card] = {

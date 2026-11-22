@@ -117,5 +117,37 @@ class GameSpec extends AnyWordSpec with Matchers {
 
       game.state shouldBe a[AttackState]
     }
+    "restore the previous game state" in {
+      val game = Game.startGame()
+      val backup = game.createBackup()
+
+      game.player1.playCard(0)
+      game.player2.playCard(0)
+
+      game.deck.drawCard
+
+      game.discardPile = List(Card(14, "♥"))
+
+      game.attacker = game.player2
+      game.defender = game.player1
+
+      game.state = new DefendState()
+
+      game.attackingCard = Some(Card(10, "♥"))
+      game.defendingCard = Some(Card(11, "♥"))
+
+      game.restoreBackup(backup)
+
+      game.player1.getHand shouldBe backup.player1Hand
+      game.player2.getHand shouldBe backup.player2Hand
+
+      game.deck.list shouldBe backup.deckCards
+      game.discardPile shouldBe backup.discardCards
+      game.attacker shouldBe backup.attacker
+      game.defender shouldBe backup.defender
+      game.state shouldBe a[AttackState]
+      game.attackingCard shouldBe backup.attackingCard
+      game.defendingCard shouldBe backup.defendingCard
+    }
   }
 }
