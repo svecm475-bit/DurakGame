@@ -1,21 +1,29 @@
 package command
 
 import model.{Game, GameBackup, Card}
-
+import scala.util.{Try, Success, Failure}
 
 class PlayCardCommand(game: Game, index: Int) extends Command{
   private var backup:Option[GameBackup] =None
   private var playedCard:Option[Card] = None
 
-  override def execute(): Unit = {
-    // Create a backup before changing the game
-    backup = Some(game.createBackup())
-    // Get the selected card from the current player's hand
-    val card = game.state.currentPlayer(game).flatMap(_.playCard(index))
+  override def execute(): Try[Unit] = Try {
+    val player = game.state.currentPlayer(game)
+      .getOrElse(throw new IllegalStateException("No active player"))
+
+    if (player.getHand.lift(index).isEmpty) {
+      throw new NoSuchElementException("Card not found")
+    }
+
+    val savedGame = game.createBackup()
+
+    val card = player.playCard(index)
       .getOrElse(throw new NoSuchElementException("Card not found"))
 
-    playedCard = Some(card)
     game.playCard(card)
+
+    backup = Some(savedGame)
+    playedCard = Some(card)
   }
 
   override def undo(): Unit = {
