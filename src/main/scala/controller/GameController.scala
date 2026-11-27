@@ -1,18 +1,30 @@
 package controller
 
+import command.{Invoker, PlayCardCommand}
 import model.{Card, Game}
 import util.Observable
 
+import scala.util.{Failure, Success}
+
 class GameController (game: Game) extends Observable{
+  private val invoker = new Invoker()
   def processPlayingCard(index: Int): Option[Card] = {
-    val card = game.state.currentPlayer(game).flatMap(_.playCard(index))
+    val command = new PlayCardCommand(game, index)
 
-    card.foreach { playedCard =>
-      game.playCard(playedCard)
-      notifyObservers()
+    invoker.doStep(command) match {
+      case Success(_) =>
+        notifyObservers()
+        command.getPlayedCard
+
+      case Failure(error) =>
+        println(s"Cannot play card: ${error.getMessage}")
+        None
     }
+  }
 
-    card
+  def undo(): Unit = {
+    invoker.undoStep()
+    notifyObservers()
   }
 
   def getPlayerHand: List[Card] = {

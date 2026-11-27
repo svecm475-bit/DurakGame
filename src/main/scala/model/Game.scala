@@ -25,6 +25,30 @@ class Game(val player1: Player,
 
     round.finishRound(this)
   }
+  def createBackup(): GameBackup = {
+    GameBackup(
+      player1Hand = player1.getHand,
+      player2Hand = player2.getHand,
+      deckCards = deck.list,
+      discardCards = discardPile,
+      attacker = attacker,
+      defender = defender,
+      state = state,
+      attackingCard = attackingCard,
+      defendingCard = defendingCard
+    )
+  }
+  def restoreBackup(backup: GameBackup): Unit = {
+    player1.hand = backup.player1Hand
+    player2.hand = backup.player2Hand
+    deck.list = backup.deckCards
+    discardPile = backup.discardCards
+    attacker = backup.attacker
+    defender = backup.defender
+    state = backup.state
+    attackingCard = backup.attackingCard
+    defendingCard = backup.defendingCard
+  }
 }
 
 object Game {

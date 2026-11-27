@@ -1,7 +1,7 @@
 package view
 
 import controller.GameController
-import model.Game
+import model.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import view.TUI
@@ -63,6 +63,7 @@ class TUISpec extends AnyWordSpec with Matchers {
       result should include("Attack:")
       result should include("Defend:")
       result should include("\u001b[H\u001b[2J")
+      result should include("[0] show cards\n[1] play card\n[2] undo last move\n")
       result should include(game.trumpCard.toString)
     }
 
@@ -133,5 +134,53 @@ class TUISpec extends AnyWordSpec with Matchers {
 
       result should include("Exiting...")
     }
+
+    "show when the user enters 0"  in {
+      val (_, _, tui) = createTUI()
+
+      val result = runCommands(tui, "0\nq\n")
+
+      result should include("CARD GAME: DURAK")
+      result should include("YOUR HAND:")
+      result should include("Exiting...")
+    }
+    "play when the user enters 1" in {
+      val (game, controller, tui) = createTUI()
+      controller.add(tui)
+
+      val playedCard = game.player1.getHand.head
+
+      val result = runCommands(tui, "1\n0\nq\n")
+
+      game.attackingCard shouldBe Some(playedCard)
+      game.player1.getHandSize shouldBe 5
+
+      result should include("Choose index")
+      result should include(s"Attack:  $playedCard")
+      result should include("Exiting...")
+
+    }
+    "undo a move when user enters undo" in {
+      val (game, _, tui) = createTUI()
+      val originalHand = game.player1.getHand
+
+      val result = runCommands(tui, "1\n0\nundo\nexit\n")
+
+      game.player1.getHand shouldBe originalHand
+      game.attackingCard shouldBe None
+      game.state shouldBe a[AttackState]
+    }
+
+    "undo a move when user enters 2" in {
+      val (game, _, tui) = createTUI()
+      val originalHand = game.player1.getHand
+
+      runCommands(tui, "1\n0\n2\nexit\n")
+
+      game.player1.getHand shouldBe originalHand
+      game.attackingCard shouldBe None
+      game.state shouldBe a[AttackState]
+    }
+
   }
 }
