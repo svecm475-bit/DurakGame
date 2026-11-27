@@ -203,5 +203,19 @@ class GameControllerSpec extends AnyWordSpec with Matchers {
       game.attackingCard shouldBe None
       game.state shouldBe a[AttackState]
     }
+    "print an error message for an invalid card" in {
+      val game = createGame()
+      val controller = new GameController(game)
+
+      val output = new java.io.ByteArrayOutputStream()
+
+      Console.withOut(output) {
+        controller.processPlayingCard(100)
+      }
+
+      output.toString("UTF-8") should include(
+        "Cannot play card: Card not found"
+      )
+    }
   }
 }

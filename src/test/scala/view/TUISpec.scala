@@ -164,7 +164,7 @@ class TUISpec extends AnyWordSpec with Matchers {
       val (game, _, tui) = createTUI()
       val originalHand = game.player1.getHand
 
-      runCommands(tui, "1\n0\nundo\nexit\n")
+      val result = runCommands(tui, "1\n0\nundo\nexit\n")
 
       game.player1.getHand shouldBe originalHand
       game.attackingCard shouldBe None

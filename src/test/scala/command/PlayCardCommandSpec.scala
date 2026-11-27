@@ -67,5 +67,56 @@ class PlayCardCommandSpec extends AnyWordSpec with Matchers {
       game.player1.getHand shouldBe originalHand
       game.state shouldBe a[AttackState]
     }
+    "return a meaningful error when no player is active" in {
+      val game = Game.startGame()
+      game.state = new RoundFinishedState()
+
+      val command = new PlayCardCommand(game, 0)
+      val result = command.execute()
+
+      result.failed.toOption.map(_.getMessage) shouldBe
+        Some("No active player")
+    }
+    "return a meaningful error for an invalid index" in {
+      val game = Game.startGame()
+      val command = new PlayCardCommand(game, 100)
+
+      val result = command.execute()
+
+      result.failed.toOption.map(_.getMessage) shouldBe
+        Some("Card not found")
+    }
+    "return a meaningful error when undo is called before execute" in {
+      val game = Game.startGame()
+      val command = new PlayCardCommand(game, 0)
+
+      val error = intercept[IllegalArgumentException] {
+        command.undo()
+      }
+
+      error.getMessage shouldBe "Command was not executed"
+    }
+    "return an error when the player cannot play the selected card" in {
+      val player = new Player(List(Card(7, "♥"))) {
+        override def playCard(index: Int): Option[Card] = None
+      }
+
+      val baseGame = Game.startGame()
+
+      val game = new Game(
+        player,
+        baseGame.player2,
+        baseGame.deck,
+        baseGame.trumpCard
+      )
+
+      val command = new PlayCardCommand(game, 0)
+      val result = command.execute()
+
+      result.failed.toOption.map(_.getMessage) shouldBe
+        Some("Card not found")
+
+      game.attackingCard shouldBe None
+    }
   }
 }

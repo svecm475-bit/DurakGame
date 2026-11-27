@@ -11,10 +11,6 @@ class PlayCardCommand(game: Game, index: Int) extends Command{
     val player = game.state.currentPlayer(game)
       .getOrElse(throw new IllegalStateException("No active player"))
 
-    if (player.getHand.lift(index).isEmpty) {
-      throw new NoSuchElementException("Card not found")
-    }
-
     val savedGame = game.createBackup()
 
     val card = player.playCard(index)
